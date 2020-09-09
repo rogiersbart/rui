@@ -1,0 +1,23 @@
+Package: rui
+Type: Package
+Title: A simple set of UI functions
+Version: 0.0.0.9000
+Authors@R: person(
+    given = "Bart",
+    family = "Rogiers",
+    email = "rogiers.bart@gmail.com",
+    role = c("cre", "aut"),
+    comment = c(ORCID = "0000-0002-8836-0988"))
+Description: This package provides a wrapper around different cli and
+    usethis functions, aiming at providing a small but consistent set of
+    verbs to construct a simple R package UI.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    cli,
+    usethis
+RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
+URL: https://github.com/rogiersbart/rui
+BugReports: https://github.com/rogiersbart/rui/issues
