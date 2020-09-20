@@ -13,28 +13,11 @@ begin(...)
 
 update(...)
 
-end(
-  id = NULL,
-  result = c("clear", "done", "failed"),
-  msg_done = NULL,
-  msg_failed = NULL,
-  .envir = parent.frame()
-)
+end(.envir = parent.frame())
 
-succeed(
-  id = NULL,
-  msg_done = NULL,
-  .envir = parent.frame(),
-  done_class = "alert-success"
-)
+succeed(.envir = parent.frame())
 
-fail(
-  id = NULL,
-  msg = NULL,
-  msg_failed = NULL,
-  .envir = parent.frame(),
-  failed_class = "alert-danger"
-)
+fail(.envir = parent.frame())
 }
 \arguments{
 \item{...}{Character vectors supporting \strong{glue} strings and \strong{cli} inline

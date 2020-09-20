@@ -14,6 +14,7 @@ demo_cli_inline_styles <- function() {
   rui::tell("Use {{.fun text}} for {.fun function name}")
   rui::tell("Use {{.arg text}} for {.arg function argument}")
   rui::tell("Use {{.key text}} for {.key keyboard key}")
+  rui::tell("Use {{.kbd text}} for {.kbd keyboard key}")
   rui::tell("Use {{.file text}} for {.file file name}")
   rui::tell("Use {{.path text}} for {.path path}")
   rui::tell("Use {{.email text}} for {.email an email address}")
@@ -21,6 +22,7 @@ demo_cli_inline_styles <- function() {
   rui::tell("Use {{.var text}} for {.var variable name}")
   rui::tell("Use {{.envvar text}} for {.envvar name of an environment variable}")
   rui::tell("Use {{.val text}} for {.val value}")
+  rui::tell("Use {{.field text}} for {.field field}")
   invisible()
 }
 
@@ -59,19 +61,56 @@ demo_single_line_feedback <- function() {
 demo_user_interaction <- function() {
   rui::copy('copy [rui::copy("copy")]')
   include_source("rui::do", "do")
-  include_source("rui::ask", "ui_ask")
+  rui::ask('ask {.emph [rui::ask("ask")]}', .demo = TRUE)
   invisible()
 }
 
 demo_conditions <- function() {
   include_source("rui::alert", "alert")
-  rui::warn('warn [rui::warn("warn")]')
-  rui::stop('stop [rui::stop("stop")]')
+  rui::warn('warn [rui::warn("warn")]', .demo = TRUE)
+  rui::stop('stop [rui::stop("stop")]', .demo = TRUE)
   invisible()
+}
+
+demo_object_inspection <- function() {
+  include_source("rui::title", "title")
+  include_source("rui::show", "show")
+  include_source("rui::extract", "extract")
+  rui::tell("")
+  rui::inspect(1:5)
+  rui::inspect(rnorm(10))
+  rui::inspect(letters)
+  rui::inspect(TRUE)
+  rui::inspect(Sys.Date())
+  rui::inspect(Sys.time())
+
+  rui::inspect(cars)
+  rui::inspect(volcano)
+  rui::inspect(list(1:5, letters, cars, volcano))
+  rui::inspect(list(1:5, letters, cars, volcano), 2)
 }
 
 include_source <- function(fname, text) {
   f <- eval(parse(text = fname))
   f('{text} {.emph [{fname}("{text}")]}')
   invisible()
+}
+
+demo_all <- function() {
+  title("{.strong cli inline styles}")
+  demo_cli_inline_styles()
+  title("{.strong conditions}")
+  demo_conditions()
+  title("{.strong multi-line feedback}")
+  demo_multi_line_feedback()
+  title("{.strong single-line feedback}")
+  demo_single_line_feedback()
+  title("{.strong object inspection}")
+  demo_object_inspection()
+  title("{.strong standard text}")
+  demo_standard_text()
+  title("{.strong user interaction}")
+  demo_user_interaction()
+  title("{.strong glue strings}")
+  demo_glue_strings()
 }

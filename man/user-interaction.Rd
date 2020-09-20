@@ -7,11 +7,11 @@
 \alias{ask}
 \title{User interaction}
 \usage{
-copy(x, copy = rlang::is_interactive(), .envir = parent.frame())
+copy(...)
 
 do(...)
 
-ask(...)
+ask(..., .demo = FALSE)
 }
 \arguments{
 \item{...}{Character vectors supporting \strong{glue} strings and \strong{cli} inline

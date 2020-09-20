@@ -41,6 +41,7 @@ rui:::demo_multi_line_feedback()
 rui:::demo_single_line_feedback()
 rui:::demo_user_interaction()
 rui:::demo_conditions()
+rui:::demo_object_inspection()
 ```
 
 For a quick overview of the **glue** strings and inline **cli** styles,
