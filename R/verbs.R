@@ -285,19 +285,46 @@
     # TODO condense this, in a separate function, by applying gsub to a nx2
     # character matrix?
     txt <- gsub(": num ", ": {.emph <dbl>} ", txt, fixed = TRUE)
-    txt <- gsub(": int ", ": {.emph <int>} ", txt, fixed = TRUE)
-    txt <- gsub(": chr ", ": {.emph <chr>} ", txt, fixed = TRUE)
-    txt <- gsub(": logi ", ": {.emph <lgl>} ", txt, fixed = TRUE)
     txt <- gsub("^ num ", "{.emph <dbl>} ", txt)
+    txt <- gsub(": Named num ", ": {.emph <n.dbl>} ", txt, fixed = TRUE)
+    txt <- gsub("^ Named num ", "{.emph <n.dbl>} ", txt)
+
     txt <- gsub("^ int ", "{.emph <int>} ", txt)
+    txt <- gsub(": int ", ": {.emph <int>} ", txt, fixed = TRUE)
+    txt <- gsub("^ Named int ", "{.emph <n.int>} ", txt)
+    txt <- gsub(": Named int ", ": {.emph <n.int>} ", txt, fixed = TRUE)
+
     txt <- gsub("^ chr ", "{.emph <chr>} ", txt)
+    txt <- gsub(": chr ", ": {.emph <chr>} ", txt, fixed = TRUE)
+    txt <- gsub("^ Named chr ", "{.emph <n.chr>} ", txt)
+    txt <- gsub(": Named chr ", ": {.emph <n.chr>} ", txt, fixed = TRUE)
+
+    txt <- gsub(": logi ", ": {.emph <lgl>} ", txt, fixed = TRUE)
     txt <- gsub("^ logi ", "{.emph <lgl>} ", txt)
+    txt <- gsub(": Named logi ", ": {.emph <n.lgl>} ", txt, fixed = TRUE)
+    txt <- gsub("^ Named logi ", "{.emph <n.lgl>} ", txt)
+
+    txt <- gsub(": raw ", ": {.emph <raw>} ", txt, fixed = TRUE)
+    txt <- gsub("^ raw ", "{.emph <raw>} ", txt)
+    txt <- gsub(": Named raw ", ": {.emph <n.raw>} ", txt, fixed = TRUE)
+    txt <- gsub("^ Named raw ", "{.emph <n.raw>} ", txt)
+
     txt <- gsub("'difftime'", "{.emph <drtn>}", txt, fixed = TRUE)
+
     txt <- gsub(" '", " {.val '", txt)
     txt <- gsub("' ", "'} ", txt)
     txt <- gsub("':", "'} ", txt)
     txt <- gsub(":'", ": {.val '", txt)
     txt <- gsub("^'", "{.val '", txt)
+
+    txt <- gsub(" ‘", " {.val '", txt)
+    txt <- gsub("’ ", "'} ", txt)
+    txt <- gsub("’:", "'} ", txt)
+    txt <- gsub(":‘", ": {.val '", txt)
+    txt <- gsub("^‘", "{.val '", txt)
+
+    txt <- gsub(":Classes ", ": ", txt, fixed = TRUE)
+    txt <- gsub(" and ", ", ", txt, fixed = TRUE)
     txt <- gsub(" obs. of  ", "x", txt, fixed = TRUE)
     txt <- gsub(" variables:", "", txt)
     txt <- gsub("^ Date\\[", "Date[", txt)
