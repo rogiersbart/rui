@@ -105,7 +105,8 @@
                                       paste(...), " ... done"),
                     msg_failed = paste0("{cli::col_red('x')} ",
                                         paste(...), " ... failed"),
-                    .envir = parent.frame())
+                    .envir = parent.frame(),
+                    .auto_close = FALSE)
   }
 
   #' @rdname single-line-feedback
