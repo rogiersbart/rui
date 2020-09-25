@@ -279,10 +279,9 @@
   #' @param levels Number of levels to include. Defaults to 1.
   #' @export
   inspect <- function(object, levels = 1) {
-    if ("tbl" %in% class(object)) levels <- levels + 1
     txt <- capture.output(str(object, give.attr = FALSE,
                               vec.len = 2,
-                              max.level = levels))
+                              max.level = levels + 1))
     # TODO condense this, in a separate function, by applying gsub to a nx2
     # character matrix?
     txt <- gsub(": num ", ": {.emph <dbl>} ", txt, fixed = TRUE)
@@ -340,7 +339,12 @@
     txt <- ifelse(grepl("'data.frame'", txt),
                   paste0(gsub("frame'} \t", "frame'} [", txt), "]"),
                   txt)
+    txt <- ifelse(grepl(" tibble ", txt, fixed = TRUE),
+                  gsub(" tibble ", " {.val 'tbl_df'} ", txt, fixed = TRUE),
+                  txt)
+    txt <- gsub(" x ", "x", txt, fixed = TRUE)
     txt <- gsub(">}  ", ">} ", txt, fixed = TRUE)
+    txt <- gsub(" (S3: tbl_df/tbl/data.frame)", "", txt, fixed = TRUE)
 
     if (is.null(dim(object))) {
       dimensions <- paste0("[1:", length(object), "]")
@@ -359,10 +363,11 @@
       show(first_line)
       return(invisible())
     }
-    levels <- inspect_extract_level(txt)
+    txt_levels <- inspect_extract_level(txt)
     txt <- inspect_remove_level_prefix(txt)
     for (i in 1:length(txt)) {
-      extract(txt[i], level = levels[i])
+      if (txt_levels[i] <= levels)
+        extract(txt[i], level = txt_levels[i])
     }
     invisible()
   }
