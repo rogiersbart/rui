@@ -17,6 +17,8 @@ LazyData: true
 Imports: 
     cli,
     usethis
+Suggests:
+    reticulate
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 URL: https://github.com/rogiersbart/rui
