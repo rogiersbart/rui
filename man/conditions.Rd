@@ -4,6 +4,7 @@
 \alias{conditions}
 \alias{alert}
 \alias{warn}
+\alias{error}
 \alias{stop}
 \title{Conditions}
 \usage{
@@ -11,11 +12,13 @@ alert(...)
 
 warn(..., .demo = FALSE)
 
-stop(..., .demo = FALSE)
+error(..., .demo = FALSE)
+
+stop(...)
 }
 \description{
 These functions provide a way for signaling conditions. \code{rui::warn()} and
-\code{rui::stop()} are drop-in replacements for \code{\link[base:warning]{base::warning()}} and
+\code{rui::error()} are drop-in replacements for \code{\link[base:warning]{base::warning()}} and
 \code{\link[base:stop]{base::stop()}}, which support \strong{glue} strings. The function \code{rui::alert()}
 can be used for alerts with \strong{cli} inline styles as well. We recommend
 doing so before issuing a warning or error.

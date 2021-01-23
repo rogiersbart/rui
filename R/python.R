@@ -9,23 +9,23 @@ python <- function() {
   py <- reticulate::py
   py$rui <- reticulate::r_to_py(list(
     tell = rui::tell,
-    title = rui::title,
+    entitle = rui::entitle,
     inform = rui::inform,
     approve = rui::approve,
     disapprove = rui::disapprove,
     begin = rui::begin,
-    change = rui::update,
-    end = rui::end,
+    proceed = rui::proceed,
+    clear = rui::clear,
     succeed = rui::succeed,
     fail = rui::fail,
-    clip = rui::copy,
-    do = rui::do,
+    give = rui::give,
+    suggest = rui::suggest,
     ask = rui::ask,
     alert = rui::alert,
     warn = rui::warn,
-    stop = rui::stop,
-    extract = rui::extract,
-    show = rui::show,
+    error = rui::error,
+    expose = rui::expose,
+    display = rui::display,
     inspect = rui::inspect
   ))
   reticulate::py_run_string(

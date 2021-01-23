@@ -32,7 +32,7 @@ demo_standard_text <- function() {
 }
 
 demo_multi_line_feedback <- function() {
-  include_source("rui::title", "title")
+  include_source("rui::entitle", "entitle")
   include_source("rui::inform", "inform")
   include_source("rui::approve", "approve")
   include_source("rui::disapprove", "disapprove")
@@ -48,19 +48,19 @@ demo_single_line_feedback <- function() {
   fail()
   begin("Task that will disappear")
   Sys.sleep(2)
-  end()
+  clear()
   begin("Ongoing task")
   Sys.sleep(2)
   inform("Information provided during an ongoing task.")
   Sys.sleep(2)
-  update("Ongoing task - Updated")
+  proceed("Ongoing task - Updated")
   Sys.sleep(2)
   succeed()
 }
 
 demo_user_interaction <- function() {
-  rui::copy('copy [rui::copy("copy")]')
-  include_source("rui::do", "do")
+  rui::give('give [rui::give("give")]')
+  include_source("rui::suggest", "suggest")
   rui::ask('ask {.emph [rui::ask("ask")]}', .demo = TRUE)
   invisible()
 }
@@ -68,14 +68,14 @@ demo_user_interaction <- function() {
 demo_conditions <- function() {
   include_source("rui::alert", "alert")
   rui::warn('warn [rui::warn("warn")]', .demo = TRUE)
-  rui::stop('stop [rui::stop("stop")]', .demo = TRUE)
+  rui::error('error [rui::error("error")]', .demo = TRUE)
   invisible()
 }
 
 demo_object_inspection <- function() {
-  include_source("rui::title", "title")
-  include_source("rui::show", "show")
-  include_source("rui::extract", "extract")
+  include_source("rui::entitle", "entitle")
+  include_source("rui::display", "display")
+  include_source("rui::expose", "expose")
   rui::tell("")
   rui::inspect(1:5)
   rui::inspect(rnorm(10))
@@ -97,20 +97,20 @@ include_source <- function(fname, text) {
 }
 
 demo_all <- function() {
-  title("{.strong cli inline styles}")
+  entitle("{.strong cli inline styles}")
   demo_cli_inline_styles()
-  title("{.strong conditions}")
+  entitle("{.strong conditions}")
   demo_conditions()
-  title("{.strong multi-line feedback}")
+  entitle("{.strong multi-line feedback}")
   demo_multi_line_feedback()
-  title("{.strong single-line feedback}")
+  entitle("{.strong single-line feedback}")
   demo_single_line_feedback()
-  title("{.strong object inspection}")
+  entitle("{.strong object inspection}")
   demo_object_inspection()
-  title("{.strong standard text}")
+  entitle("{.strong standard text}")
   demo_standard_text()
-  title("{.strong user interaction}")
+  entitle("{.strong user interaction}")
   demo_user_interaction()
-  title("{.strong glue strings}")
+  entitle("{.strong glue strings}")
   demo_glue_strings()
 }

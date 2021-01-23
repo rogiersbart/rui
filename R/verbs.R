@@ -12,8 +12,12 @@
   #' @export
   tell <- function(
     ...,
-    .envir = parent.frame()
+    .envir = parent.frame(),
+    capture = FALSE
   ) {
+    if (capture) {
+      return(capture.output(tell(..., .envir = .envir), type = "message")[1])
+    }
     cli::cli_status(paste(...),
                     .envir = .envir,
                     .keep = TRUE)
@@ -30,7 +34,7 @@
   #' console (*e.g.* running external code that does provide essential
   #' information (in such a case, these are useful in combination with
   #' [processx::run()] and its `stdout_line_callback` argument)) Use
-  #' - `rui::title()` for titling sections,
+  #' - `rui::entitle()` for naming sections,
   #' - `rui::inform()` for providing information,
   #' - `rui::approve()` for succesful completion of a task or a positive test,
   #'   and
@@ -44,10 +48,17 @@
 
   #' @rdname multi-line-feedback
   #' @export
-  title <- function(...) {
+  entitle <- function(...) {
     tell(cli::col_yellow("#"),
          ...,
          .envir = parent.frame())
+  }
+
+  #' @rdname multi-line-feedback
+  #' @export
+  title <- function(...) {
+    .Deprecated(new = "entitle()", old = "title()")
+    entitle(...)
   }
 
   #' @rdname multi-line-feedback
@@ -83,12 +94,12 @@
   #' is no important information that should persist in the console for the
   #' user to refer back to (*e.g.* downloads, optimization, running an external
   #' code that doesn't output important information). Use
-  #' - `rui::begin()` to start a task,
-  #' - `rui::update()` to update the task description,
+  #' - `rui::begin()` to begin a task,
+  #' - `rui::proceed()` to proceed with another task,
   #' - for ending the single-line feedback, any of
   #'   - `rui::succeed()` for succesful completion,
   #'   - `rui::fail()` for unsuccesful completion, and
-  #'   - `rui::end()` to remove the feedback line.
+  #'   - `rui::clear()` to remove the feedback line.
   #'
   #' @param ... Character vectors supporting **glue** strings and **cli** inline
   #' styles.
@@ -111,7 +122,7 @@
 
   #' @rdname single-line-feedback
   #' @export
-  update <- function(...) {
+  proceed <- function(...) {
     cli::cli_status_update(msg = paste0("{cli::col_yellow('~')} ",
                                         paste(...), " ..."),
                            msg_done = paste0("{cli::col_green('v')} ",
@@ -123,8 +134,22 @@
 
   #' @rdname single-line-feedback
   #' @export
-  end <- function(.envir = parent.frame()) {
+  update <- function(...) {
+    .Deprecated(new = "proceed()", old = "update()")
+    proceed(...)
+  }
+
+  #' @rdname single-line-feedback
+  #' @export
+  clear <- function(.envir = parent.frame()) {
     cli::cli_status_clear(.envir = .envir)
+  }
+
+  #' @rdname single-line-feedback
+  #' @export
+  end <- function(...) {
+    .Deprecated(new = "clear()", old = "end()")
+    clear(...)
   }
 
   #' @rdname single-line-feedback
@@ -144,10 +169,10 @@
   #' User interaction
   #'
   #' These functions provide a way to interact with the user. Use
-  #' - `rui::copy()` to print and copy R code to the clipboard,
-  #' - `rui::do()` to list a to do item,
-  #' - `rui::ask()` to ask a yes/no question.
-  #' Note `rui::copy()` does not support **cli** styles at the moment.
+  #' - `rui::give()` to give the user a piece of code to be inserted elsewhere,
+  #' - `rui::suggest()` to suggest the user a thing to do,
+  #' - `rui::ask()` to ask the user a yes/no question.
+  #' Note `rui::give()` does not support **cli** styles at the moment.
   #'
   #' @param ... Character vectors supporting **glue** strings and **cli** inline
   #' styles.
@@ -158,16 +183,30 @@
   # NOTE this does not work with cli styling, but that's OK?
   #' @rdname user-interaction
   #' @export
-  copy <- function(...) {
+  give <- function(...) {
     usethis::ui_code_block(...)
   }
 
   #' @rdname user-interaction
   #' @export
-  do <- function(...) {
+  copy <- function(...) {
+    .Deprecated(new = "give()", old = "copy()")
+    clip(...)
+  }
+
+  #' @rdname user-interaction
+  #' @export
+  suggest <- function(...) {
     tell(cli::col_red('*'),
          ...,
          .envir = parent.frame())
+  }
+
+  #' @rdname user-interaction
+  #' @export
+  do <- function(...) {
+    .Deprecated(new = "suggest()", old = "do()")
+    suggest(...)
   }
 
   #' @rdname user-interaction
@@ -177,7 +216,7 @@
     # consistent behaviour on all consoles/operating systems
     tell(cli::col_yellow('?'), ..., .envir = parent.frame())
     if (!interactive() & !.demo) {
-      rui::stop("User input required, but session is not interactive.")
+      error("User input required, but session is not interactive.")
     }
     if (.demo) {
       tell("")
@@ -187,7 +226,7 @@
       return(invisible())
     }
     selection <- utils::menu(c("Yes please.", "No thanks."))
-    if (selection == 0) stop("A choice is required.")
+    if (selection == 0) error("A choice is required.")
     as.logical(2 - selection)
   }
 
@@ -196,7 +235,7 @@
   #' Conditions
   #'
   #' These functions provide a way for signaling conditions. `rui::warn()` and
-  #' `rui::stop()` are drop-in replacements for [base::warning()] and
+  #' `rui::error()` are drop-in replacements for [base::warning()] and
   #' [base::stop()], which support **glue** strings. The function `rui::alert()`
   #' can be used for alerts with **cli** inline styles as well. We recommend
   #' doing so before issuing a warning or error.
@@ -223,12 +262,19 @@
 
   #' @rdname conditions
   #' @export
-  stop <- function(..., .demo = FALSE) {
+  error <- function(..., .demo = FALSE) {
     if (.demo) {
       message(paste0("Error: ", ...))
       return(invisible())
     }
     usethis::ui_stop(paste(...))
+  }
+
+  #' @rdname conditions
+  #' @export
+  stop <- function(...) {
+    .Deprecated(new = "error()", old = "stop()")
+    error(...)
   }
 
 # Object inspection ----
@@ -237,12 +283,12 @@
   #'
   #' These functions provide a means to inspect the internal structure of
   #' objects, or design a UI to do so, which is consistent with the rest of the
-  #' {rui} functionality. `rui::extract()` can be used to print information on
+  #' {rui} functionality. `rui::expose()` can be used to print information on
   #' different parts of an object (where the `.` in the prefix should be
   #' familiar to users of the {magrittr} pipe, and the `$` is one of the
-  #' subsetting operators), whereas `rui::show()` would be more appropriate for
+  #' subsetting operators), whereas `rui::display()` would be more appropriate for
   #' the atomic types. `rui::inspect()` attempts to use both these functions
-  #' together with `rui::title()` to process the output of a `utils::str()` call,
+  #' together with `rui::entitle()` to process the output of a `utils::str()` call,
   #' and print the structure consistent with the rest of the {rui} functions,
   #' borrowing some style elements from `tibble:::print.tbl()` and
   #' `tibble::glimpse()`.
@@ -256,7 +302,7 @@
   #' @param level Level of indentation, typically useful for (nested) lists.
   #' Defaults to 1.
   #' @export
-  extract <- function(..., level = 1) {
+  expose <- function(..., level = 1) {
     prefix <- paste0(
       rep(c(cli::col_cyan(".$"), cli::col_yellow(".$")),
           ceiling(level / 2))[1:level],
@@ -267,11 +313,27 @@
   }
 
   #' @rdname object-inspection
+  #' @param level Level of indentation, typically useful for (nested) lists.
+  #' Defaults to 1.
   #' @export
-  show <- function(...) {
+  extract <- function(...) {
+    .Deprecated(new = "expose()", old = "extract()")
+    expose(...)
+  }
+
+  #' @rdname object-inspection
+  #' @export
+  display <- function(...) {
     tell(cli::col_cyan("."),
          ...,
          .envir = parent.frame())
+  }
+
+  #' @rdname object-inspection
+  #' @export
+  show <- function(...) {
+    .Deprecated(new = "display()", old = "show()")
+    display(...)
   }
 
   #' @rdname object-inspection
@@ -354,25 +416,25 @@
     first_line <- txt[1]
     txt <- txt[-1]
     if (is.vector(object) & is.atomic(object)) {
-      title("vector of type {.val {typeof(object)[1]}} {dimensions}")
+      entitle("vector of type {.val {typeof(object)[1]}} {dimensions}")
     } else {
-      title("object of class {.val {class(object)[1]}}",
+      entitle("object of class {.val {class(object)[1]}}",
                  "type {.val {typeof(object)[1]}} {dimensions}")
     }
     if (is.atomic(object)) {
-      show(first_line)
+      display(first_line)
       return(invisible())
     }
-    txt_levels <- inspect_extract_level(txt)
+    txt_levels <- inspect_expose_level(txt)
     txt <- inspect_remove_level_prefix(txt)
     for (i in 1:length(txt)) {
       if (txt_levels[i] <= levels)
-        extract(txt[i], level = txt_levels[i])
+        expose(txt[i], level = txt_levels[i])
     }
     invisible()
   }
 
-  inspect_extract_level <- function(txt) {
+  inspect_expose_level <- function(txt) {
     dots <- substring(txt, 1, regexpr("$", txt, fixed = TRUE) - 1)
     dots <- gsub(" ", "", dots)
     nchar(dots) / 2 + 1

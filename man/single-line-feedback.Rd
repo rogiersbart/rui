@@ -3,7 +3,9 @@
 \name{single-line-feedback}
 \alias{single-line-feedback}
 \alias{begin}
+\alias{proceed}
 \alias{update}
+\alias{clear}
 \alias{end}
 \alias{succeed}
 \alias{fail}
@@ -11,9 +13,13 @@
 \usage{
 begin(...)
 
+proceed(...)
+
 update(...)
 
-end(.envir = parent.frame())
+clear(.envir = parent.frame())
+
+end(...)
 
 succeed(.envir = parent.frame())
 
@@ -30,13 +36,13 @@ is no important information that should persist in the console for the
 user to refer back to (\emph{e.g.} downloads, optimization, running an external
 code that doesn't output important information). Use
 \itemize{
-\item \code{rui::begin()} to start a task,
-\item \code{rui::update()} to update the task description,
+\item \code{rui::begin()} to begin a task,
+\item \code{rui::proceed()} to proceed with another task,
 \item for ending the single-line feedback, any of
 \itemize{
 \item \code{rui::succeed()} for succesful completion,
 \item \code{rui::fail()} for unsuccesful completion, and
-\item \code{rui::end()} to remove the feedback line.
+\item \code{rui::clear()} to remove the feedback line.
 }
 }
 }

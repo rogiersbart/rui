@@ -2,12 +2,18 @@
 % Please edit documentation in R/verbs.R
 \name{object-inspection}
 \alias{object-inspection}
+\alias{expose}
 \alias{extract}
+\alias{display}
 \alias{show}
 \alias{inspect}
 \title{Object inspection}
 \usage{
-extract(..., level = 1)
+expose(..., level = 1)
+
+extract(...)
+
+display(...)
 
 show(...)
 
@@ -27,12 +33,12 @@ Defaults to 1.}
 \description{
 These functions provide a means to inspect the internal structure of
 objects, or design a UI to do so, which is consistent with the rest of the
-{rui} functionality. \code{rui::extract()} can be used to print information on
+{rui} functionality. \code{rui::expose()} can be used to print information on
 different parts of an object (where the \code{.} in the prefix should be
 familiar to users of the {magrittr} pipe, and the \code{$} is one of the
-subsetting operators), whereas \code{rui::show()} would be more appropriate for
+subsetting operators), whereas \code{rui::display()} would be more appropriate for
 the atomic types. \code{rui::inspect()} attempts to use both these functions
-together with \code{rui::title()} to process the output of a \code{utils::str()} call,
+together with \code{rui::entitle()} to process the output of a \code{utils::str()} call,
 and print the structure consistent with the rest of the {rui} functions,
 borrowing some style elements from \code{tibble:::print.tbl()} and
 \code{tibble::glimpse()}.

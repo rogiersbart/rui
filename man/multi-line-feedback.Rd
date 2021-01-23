@@ -2,12 +2,15 @@
 % Please edit documentation in R/verbs.R
 \name{multi-line-feedback}
 \alias{multi-line-feedback}
+\alias{entitle}
 \alias{title}
 \alias{inform}
 \alias{approve}
 \alias{disapprove}
 \title{Provide multi-line feedback}
 \usage{
+entitle(...)
+
 title(...)
 
 inform(...)
@@ -28,7 +31,7 @@ console (\emph{e.g.} running external code that does provide essential
 information (in such a case, these are useful in combination with
 \code{\link[processx:run]{processx::run()}} and its \code{stdout_line_callback} argument)) Use
 \itemize{
-\item \code{rui::title()} for titling sections,
+\item \code{rui::entitle()} for naming sections,
 \item \code{rui::inform()} for providing information,
 \item \code{rui::approve()} for succesful completion of a task or a positive test,
 and

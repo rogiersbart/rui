@@ -5,7 +5,7 @@
 \alias{tell}
 \title{Output standard text messages}
 \usage{
-tell(..., .envir = parent.frame())
+tell(..., .envir = parent.frame(), capture = FALSE)
 }
 \arguments{
 \item{...}{Character vectors supporting \strong{glue} strings and \strong{cli} inline
