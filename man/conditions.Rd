@@ -8,7 +8,7 @@
 \alias{stop}
 \title{Conditions}
 \usage{
-alert(...)
+alert(..., warn = FALSE, error = FALSE)
 
 warn(..., .demo = FALSE)
 
@@ -16,10 +16,21 @@ error(..., .demo = FALSE)
 
 stop(...)
 }
+\arguments{
+\item{...}{Character vectors supporting \strong{glue} strings and \strong{cli} inline
+styles.}
+
+\item{warn}{Logical. Should a warning be issued with the same message.}
+
+\item{error}{Logical. Should an error be issued with the same message.}
+}
 \description{
 These functions provide a way for signaling conditions. \code{rui::warn()} and
 \code{rui::error()} are drop-in replacements for \code{\link[base:warning]{base::warning()}} and
-\code{\link[base:stop]{base::stop()}}, which support \strong{glue} strings. The function \code{rui::alert()}
-can be used for alerts with \strong{cli} inline styles as well. We recommend
-doing so before issuing a warning or error.
+\code{\link[base:stop]{base::stop()}}, which support \strong{glue} strings and \strong{cli} inline styles.
+ANSI colours are lost however. For retaining colours, \code{rui::alert()}
+can be used. We recommend doing so before issuing a warning or error.
+}
+\seealso{
+\code{\link[glue:glue]{glue::glue()}}, \code{\link[cli:inline-markup]{cli::inline-markup}}
 }
