@@ -172,7 +172,7 @@
   #' - `rui::give()` to give the user a piece of code to be inserted elsewhere,
   #' - `rui::suggest()` to suggest the user a thing to do,
   #' - `rui::ask()` to ask the user a yes/no question.
-  #' Note `rui::give()` does not support **cli** styles at the moment.
+  #' Note `rui::give()` does not support **cli** styles.
   #'
   #' @param ... Character vectors supporting **glue** strings and **cli** inline
   #' styles.
@@ -184,7 +184,7 @@
   #' @rdname user-interaction
   #' @export
   give <- function(...) {
-    usethis::ui_code_block(...)
+    usethis::ui_code_block(c(...))
   }
 
   #' @rdname user-interaction
@@ -236,38 +236,47 @@
   #'
   #' These functions provide a way for signaling conditions. `rui::warn()` and
   #' `rui::error()` are drop-in replacements for [base::warning()] and
-  #' [base::stop()], which support **glue** strings. The function `rui::alert()`
-  #' can be used for alerts with **cli** inline styles as well. We recommend
-  #' doing so before issuing a warning or error.
+  #' [base::stop()], which support **glue** strings and **cli** inline styles.
+  #' ANSI colours are lost however. For retaining colours, `rui::alert()`
+  #' can be used. We recommend doing so before issuing a warning or error.
+  #' @param ... Character vectors supporting **glue** strings and **cli** inline
+  #' styles.
+  #' @param warn Logical. Should a warning be issued with the same message.
+  #' @param error Logical. Should an error be issued with the same message.
+  #' @seealso [glue::glue()], [`cli::inline-markup`]
   #' @name conditions
   NULL
 
   #' @rdname conditions
   #' @export
-  alert <- function(...) {
+  alert <- function(..., warn = FALSE, error = FALSE) {
     tell(cli::col_red("!"),
          ...,
          .envir = parent.frame())
+    if (warn) warn(...)
+    if (error) error(...)
   }
 
   #' @rdname conditions
   #' @export
   warn <- function(..., .demo = FALSE) {
+    msg <- tell(..., capture = TRUE)
     if (.demo) {
-      message(paste0("Warning: ", ...))
+      message(paste0("Warning: ", msg))
       return(invisible())
     }
-    usethis::ui_warn(paste(...))
+    usethis::ui_warn(msg)
   }
 
   #' @rdname conditions
   #' @export
   error <- function(..., .demo = FALSE) {
+    msg <- tell(..., capture = TRUE)
     if (.demo) {
-      message(paste0("Error: ", ...))
+      message(paste0("Error: ", msg))
       return(invisible())
     }
-    usethis::ui_stop(paste(...))
+    usethis::ui_stop(msg)
   }
 
   #' @rdname conditions
