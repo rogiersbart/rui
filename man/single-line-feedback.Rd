@@ -11,9 +11,9 @@
 \alias{fail}
 \title{Provide single-line feedback}
 \usage{
-begin(...)
+begin(..., .envir = parent.frame())
 
-proceed(...)
+proceed(..., .envir = parent.frame())
 
 update(...)
 

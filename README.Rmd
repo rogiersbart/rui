@@ -64,7 +64,6 @@ rui:::demo_cli_inline_styles()
 
 ## Note
 
-The package logo is a derivative of [Bart
-Rogiers](https://rogiersbart.github.io)' [CC BY
+The package logo is a derivative of my [CC BY
 4.0](https://creativecommons.org/licenses/by/4.0)-licensed
 [espresso](https://rogiersbart.github.io/espresso) project.
