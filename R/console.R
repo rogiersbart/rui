@@ -1,3 +1,49 @@
+# Single function to rule them all ----
+
+#' Title
+#'
+#' @param ... Character vectors supporting **glue** strings and **cli** inline
+#' styles.
+#' @param object Object to print the {rui} way through rui::inspect().
+#' @param .envir
+#'
+#' @return
+#' @export
+#'
+#' @examples
+console <- function(..., object = NULL, .envir = parent.frame()) {
+  if (!is.null(object)) {inspect(object); return(invisible())}
+  txt <- paste(...)
+  type <- substr(txt, 1, 1)
+  types <- c("i", "v", "x", "~", "*", "?", "=", "!", "#", ".", "c")
+  space <- substr(txt, 2, 2)
+  if (!(type %in% types & (space %in% c(" ", "", "$")))) {
+    tell(txt)
+    return(invisible())
+  }
+  if (space == "$" & type == ".") type <- "$"
+  if (space == "") {
+    if (type == "v") {cli::cli_progress_cleanup(); succeed(.envir = .envir); return(invisible())}
+    if (type == "x") {cli::cli_progress_cleanup(); fail(.envir = .envir); return(invisible())}
+    if (type == "c") {cli::cli_progress_cleanup(); return(invisible())}
+  }
+  txt <- substr(txt, 3, nchar(txt))
+  switch(
+    type,
+    `#` = entitle(txt),
+    i = inform(txt),
+    v = approve(txt),
+    x = disapprove(txt),
+    `~` = proceed(txt, .envir = .envir),
+    `*` = suggest(txt),
+    `?` = ask(txt),
+    `=` = give(txt),
+    `!` = alert(txt),
+    `$` = expose(txt),
+    `.` = display(txt)
+  )
+}
+
 # Standard message ----
 
 #' Output standard text messages
@@ -18,6 +64,7 @@ tell <- function(
   if (capture) {
     return(capture.output(tell(..., .envir = .envir), type = "message")[1])
   }
+  cli::cli_div(theme = rui_theme())
   cli::cli_text(paste(...), .envir = .envir)
 }
 
@@ -49,13 +96,6 @@ entitle <- function(...) {
   tell(cli::col_yellow("#"),
        ...,
        .envir = parent.frame())
-}
-
-#' @rdname multi-line-feedback
-#' @export
-title <- function(...) {
-  .Deprecated(new = "entitle()", old = "title()")
-  entitle(...)
 }
 
 #' @rdname multi-line-feedback
@@ -108,6 +148,7 @@ NULL
 #' @export
 begin <- function(..., .envir = parent.frame()) {
   if (interactive()) {
+    cli::cli_div(theme = rui_theme())
     cli::cli_progress_message(paste0("{cli::col_yellow('~')} ",
                                  paste(...), " ..."),
                     .envir = .envir)
@@ -136,22 +177,8 @@ proceed <- function(..., .envir = parent.frame()) {
 
 #' @rdname single-line-feedback
 #' @export
-update <- function(...) {
-  .Deprecated(new = "proceed()", old = "update()")
-  proceed(...)
-}
-
-#' @rdname single-line-feedback
-#' @export
 clear <- function(.envir = parent.frame()) {
   cli::cli_progress_done(.envir = .envir, result = "clear")
-}
-
-#' @rdname single-line-feedback
-#' @export
-end <- function(...) {
-  .Deprecated(new = "clear()", old = "end()")
-  clear(...)
 }
 
 #' @rdname single-line-feedback
@@ -159,6 +186,8 @@ end <- function(...) {
 succeed <- function(.envir = parent.frame()) {
   clear(parent.frame())
   tell(msg_done, .envir = parent.frame())
+  assignInNamespace("msg_done", NULL, "rui")
+  assignInNamespace("msg_failed", NULL, "rui")
 }
 
 #' @rdname single-line-feedback
@@ -166,6 +195,8 @@ succeed <- function(.envir = parent.frame()) {
 fail <- function(.envir = parent.frame()) {
   clear(parent.frame())
   tell(msg_failed, .envir = parent.frame())
+  assignInNamespace("msg_done", NULL, "rui")
+  assignInNamespace("msg_failed", NULL, "rui")
 }
 
 # User interaction ----
@@ -188,14 +219,9 @@ NULL
 #' @rdname user-interaction
 #' @export
 give <- function(...) {
+  cli::cli_div(theme = rui_theme())
+  # TODO use {cli} instead
   usethis::ui_code_block(c(...))
-}
-
-#' @rdname user-interaction
-#' @export
-copy <- function(...) {
-  .Deprecated(new = "give()", old = "copy()")
-  clip(...)
 }
 
 #' @rdname user-interaction
@@ -204,13 +230,6 @@ suggest <- function(...) {
   tell(cli::col_br_red('*'),
        ...,
        .envir = parent.frame())
-}
-
-#' @rdname user-interaction
-#' @export
-do <- function(...) {
-  .Deprecated(new = "suggest()", old = "do()")
-  suggest(...)
 }
 
 #' @rdname user-interaction
@@ -283,13 +302,6 @@ error <- function(..., .demo = FALSE) {
   usethis::ui_stop(msg)
 }
 
-#' @rdname conditions
-#' @export
-stop <- function(...) {
-  .Deprecated(new = "error()", old = "stop()")
-  error(...)
-}
-
 # Object inspection ----
 
 #' Object inspection
@@ -326,27 +338,11 @@ expose <- function(..., level = 1) {
 }
 
 #' @rdname object-inspection
-#' @param level Level of indentation, typically useful for (nested) lists.
-#' Defaults to 1.
-#' @export
-extract <- function(...) {
-  .Deprecated(new = "expose()", old = "extract()")
-  expose(...)
-}
-
-#' @rdname object-inspection
 #' @export
 display <- function(...) {
   tell(cli::col_cyan("."),
        ...,
        .envir = parent.frame())
-}
-
-#' @rdname object-inspection
-#' @export
-show <- function(...) {
-  .Deprecated(new = "display()", old = "show()")
-  display(...)
 }
 
 #' @rdname object-inspection
@@ -456,4 +452,69 @@ inspect_remove_level_prefix <- function(txt) {
   substring(txt,
             regexpr("$", txt, fixed = TRUE) + 2,
             nchar(txt))
+}
+
+# CLI Theme ----
+
+rui_theme <- function() {
+  # red <- cli::col_red
+  # green <- cli::col_green
+  # magenta <- cli::col_magenta
+  # blue <- cli::col_blue
+  # yellow <- cli::col_yellow
+  # cyan <- cli::col_cyan
+  make_link <- function(x, type) {
+    if (interactive()) return(cli:::make_link(x, type = type))
+    x
+  }
+  list(
+    # span.dt = list(postfix = ": "),
+    # span.dd = list(),
+    # .code = list(fmt = cli:::format_code(dark)),
+    # .code.R = list(fmt = cli:::format_r_code(dark)),
+    span.emph = list(`font-style` = "italic"),
+    span.strong = list(`font-weight` = "bold"),
+    # span.code = cli:::theme_code_tick(dark),
+    # span.q = list(fmt = cli:::quote_weird_name2),
+    span.pkg = list(before = "{", after = "}", transform = cli::col_yellow,
+                    color = NULL),
+    # span.fn = cli:::theme_function(dark),
+    span.fun = list(before = "`", after = "`", transform = \(x) make_link(x, type = "fun") |> paste0("()") |> cli::col_blue()),
+    # span.arg = cli:::theme_code_tick(dark),
+    # span.kbd = list(before = "[", after = "]", color = "blue"),
+    # span.key = list(before = "[", after = "]", color = "red"),
+    # span.file = cli:::theme_file(),
+    # span.path = cli:::theme_file(),
+    span.email = list(
+      color = NULL,
+      transform = function(x) make_link(x, type = "email") |> cli::col_cyan(),
+      fmt = cli:::quote_weird_name
+    ),
+    span.url = list(
+      before = "<",
+      after = ">",
+      color = NULL,
+      `font-style` = NULL,
+      transform = function(x) make_link(x, type = "url") |> cli::col_cyan()
+    ),
+    # span.href = list(transform = function(x) cli:::make_link(x, type = "href")),
+    # span.help = list(transform = function(x) cli:::make_link(x, type = "help")),
+    # span.topic = list(transform = function(x) cli:::make_link(x, type = "topic")),
+    # span.vignette = list(transform = function(x) cli:::make_link(x, type = "vignette")),
+    # span.run = list(transform = function(x) cli:::make_link(x, type = "run")),
+    # span.var = cli:::theme_code_tick(dark),
+    # span.col = cli:::theme_code_tick(dark), span.str = list(fmt = cli:::encode_string),
+    # span.envvar = cli:::theme_code_tick(dark),
+    # span.val = list(transform = function(x, ...) cli_format(x, ...), color = "blue"),
+    # span.field = list(color = "green"),
+    # span.cls = list(collapse = "/", color = "blue", before = "<",
+    #                after = ">"),
+    # `span.progress-bar` = list(transform = cli:::theme_progress_bar,
+    #                                                         color = "green"),
+    # span.obj_type_friendly = list(transform = function(x) cli::format_inline(cli:::typename(x))),
+    # span.type = list(transform = function(x) cli::format_inline(cli:::typename(x))),
+    # span.or = list(`vec-sep2` = " or ", `vec-last` = ", or "),
+    # span.timestamp = list(before = "[", after = "]", color = "grey")),
+    NULL
+  )
 }
