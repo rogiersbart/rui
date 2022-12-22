@@ -11,8 +11,8 @@
 #' @export
 #'
 #' @examples
-console <- function(..., object = NULL, .envir = parent.frame()) {
-  if (!is.null(object)) {inspect(object); return(invisible())}
+console <- function(..., object = NULL, levels = 1, .envir = parent.frame()) {
+  if (!is.null(object)) {inspect(object, levels); return(invisible())}
   txt <- paste(...)
   type <- substr(txt, 1, 1)
   types <- c("i", "v", "x", "~", "*", "?", "=", "!", "#", ".", "c")
@@ -329,7 +329,7 @@ NULL
 #' @export
 expose <- function(..., level = 1) {
   prefix <- paste0(
-    rep(c(cli::col_cyan(".$"), cli::col_yellow(".$")),
+    rep(paste0(".", c(cli::col_cyan("$"), cli::col_yellow("$"))),
         ceiling(level / 2))[1:level],
     collapse = ""
   )
@@ -465,6 +465,7 @@ rui_theme <- function() {
   # cyan <- cli::col_cyan
   make_link <- function(x, type) {
     if (interactive()) return(cli:::make_link(x, type = type))
+    if (type == "href") return(cli:::re_match(x, "^\\[(?<text>.*)\\]\\((?<url>.*)\\)$")$text)
     x
   }
   list(
@@ -497,7 +498,9 @@ rui_theme <- function() {
       `font-style` = NULL,
       transform = function(x) make_link(x, type = "url") |> cli::col_cyan()
     ),
-    # span.href = list(transform = function(x) cli:::make_link(x, type = "href")),
+    span.href = list(
+      transform = function(x) make_link(x, type = "href") |> cli::col_cyan()
+    ),
     # span.help = list(transform = function(x) cli:::make_link(x, type = "help")),
     # span.topic = list(transform = function(x) cli:::make_link(x, type = "topic")),
     # span.vignette = list(transform = function(x) cli:::make_link(x, type = "vignette")),
