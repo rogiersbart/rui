@@ -1,56 +1,76 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rui<img src="man/figures/logo.png" align="right" width="15%"/><br><small><font color="#333333">A simple set of UI functions</font></small>
+# The {rui} R package<img src="man/figures/logo.png" align="right" width="25%"/><br><small><font color="#999">A simple set of UI functions</font></small>
 
 <!-- badges: start -->
 
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![GitHub R package
+version](https://img.shields.io/github/r-package/v/rogiersbart/rui?label=version)](https://github.com/rogiersbart/rui)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/rui)](https://CRAN.R-project.org/package=rui)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-This package provides a wrapper around different
-**[cli](https://cli.r-lib.org/)** and
-**[usethis](https://usethis.r-lib.org/)** functions, aiming at providing
-a small but consistent set of verbs to construct a simple R package UI.
+This {[rui](https://rogiersbart.github.io/rui)} R package provides a
+wrapper around different {[cli](https://cli.r-lib.org/)} and
+{[usethis](https://usethis.r-lib.org/)} functions, aiming at providing a
+small but consistent set of verbs to construct a simple R package UI.
 
-The idea is that all of the verbs allow the use of **glue** strings and
-**cli** inline styles as well, to streamline the coding with **rui**.
+The idea is that all of the verbs allow the use of
+{[glue](https://glue.tidyverse.org/)} strings and {cli} styles, to
+streamline coding with {rui}.
+
+As of version v0.2.0, the `rui::console()` function provides an
+alternative API to the verbs, which may be easier for frequent {rui}
+users, although the verbs better communicate developer intent.
 
 ## Install
 
-You can install the latest version of **rui** with any of the following:
+You can install the latest version of {rui} with the following:
 
 ``` r
-renv::install("rogiersbart/rui")
-pak::pkg_install("rogiersbart/rui")
-remotes::install_github("rogiersbart/rui")
+if (!require(pak)) install.packages("pak")
+pak::pak("rogiersbart/rui")
 ```
 
 ## Use
 
-The following internal functions can be called to get a quick overview.
-It is best if you try this in your own console/terminal of choice, to
-see if styling is supported (this should work within RStudio normally).
+The {rui} verb API is used as follows:
 
 ``` r
-rui:::demo_standard_text()
-rui:::demo_multi_line_feedback()
-rui:::demo_single_line_feedback()
-rui:::demo_user_interaction()
-rui:::demo_conditions()
-rui:::demo_object_inspection()
+rui::tell("Standard text")
+#> Standard text
+rui::entitle("Title a section")
+#> # Title a section
+rui::inform("Provide information")
+#> i Provide information
+rui::approve("Something seems to be fine")
+#> v Something seems to be fine
+rui::disapprove("Something seems to be wrong")
+#> x Something seems to be wrong
 ```
 
-For a quick overview of the **glue** strings and inline **cli** styles,
-there are two more internal demo functions.
+The `rui::console()` API allows the same to be achieved like this:
 
 ``` r
-rui:::demo_glue_strings()
-rui:::demo_cli_inline_styles()
+rui::console("Standard text")
+#> Standard text
+rui::console("# Title a section")
+#> # Title a section
+rui::console("i Provide information")
+#> i Provide information
+rui::console("v Something seems to be fine")
+#> v Something seems to be fine
+rui::console("x Something seems to be wrong")
+#> x Something seems to be wrong
 ```
+
+In a console/terminal, colours of the prefixes further help to
+distinguish the different kinds of messages. The above is just a subset
+of the functionality, however, as we have 19 verbs implemented at the
+moment. For a more thorough introduction, see `vignette("rui")`.
 
 ## Note
 

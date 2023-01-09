@@ -2,18 +2,22 @@
 % Please edit documentation in R/console.R
 \name{console}
 \alias{console}
-\title{Title}
+\title{The console API}
 \usage{
-console(..., object = NULL, .envir = parent.frame())
+console(..., object = NULL, levels = 1, .envir = parent.frame())
 }
 \arguments{
 \item{...}{Character vectors supporting \strong{glue} strings and \strong{cli} inline
-styles.}
+styles. This should start with a supported prefix, to map the action to one
+of the {rui} verbs. Otherwise, \code{rui::tell()} is used. Supported prefixes are(entitle), i (inform), v (approve), x (disapprove), ~ (begin/proceed), =
 
-\item{object}{Object to print the {rui} way through rui::inspect().}
+(give), * (suggest), ? (ask), ! (alert), w (warn), e (stop), . (display), and
+$ (expose). Status bars can be resolved by providing single characters "c",
+"v", or "x" for clear, succeed and fail respectively.}
 
-\item{.envir}{}
+\item{object}{Object to print the {rui} way through \code{rui::inspect()}.}
 }
 \description{
-Title
+This function provides an alternative to the verb-based API, by mapping the
+set of prefixes to the corresponding verbs.
 }

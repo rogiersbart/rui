@@ -1,27 +1,29 @@
 # Single function to rule them all ----
 
-#' Title
+#' The console API
+#'
+#' This function provides an alternative to the verb-based API, by mapping the
+#' set of prefixes to the corresponding verbs.
 #'
 #' @param ... Character vectors supporting **glue** strings and **cli** inline
-#' styles.
-#' @param object Object to print the {rui} way through rui::inspect().
-#' @param .envir
-#'
-#' @return
+#' styles. This should start with a supported prefix, to map the action to one
+#' of the {rui} verbs. Otherwise, `rui::tell()` is used. Supported prefixes are
+#' # (entitle), i (inform), v (approve), x (disapprove), ~ (begin/proceed), =
+#' (give), * (suggest), ? (ask), ! (alert), w (warn), e (stop), . (display), and
+#' $ (expose). Status bars can be resolved by providing single characters "c",
+#' "v", or "x" for clear, succeed and fail respectively.
+#' @param object Object to print the {rui} way through `rui::inspect()`.
 #' @export
-#'
-#' @examples
 console <- function(..., object = NULL, levels = 1, .envir = parent.frame()) {
   if (!is.null(object)) {inspect(object, levels); return(invisible())}
   txt <- paste(...)
   type <- substr(txt, 1, 1)
-  types <- c("i", "v", "x", "~", "*", "?", "=", "!", "#", ".", "c")
+  types <- c("i", "v", "x", "~", "*", "?", "=", "!", "#", ".", "c", "$", "e", "w")
   space <- substr(txt, 2, 2)
-  if (!(type %in% types & (space %in% c(" ", "", "$")))) {
+  if (!(type %in% types & (space %in% c(" ", "")))) {
     tell(txt)
     return(invisible())
   }
-  if (space == "$" & type == ".") type <- "$"
   if (space == "") {
     if (type == "v") {cli::cli_progress_cleanup(); succeed(.envir = .envir); return(invisible())}
     if (type == "x") {cli::cli_progress_cleanup(); fail(.envir = .envir); return(invisible())}
@@ -40,7 +42,9 @@ console <- function(..., object = NULL, levels = 1, .envir = parent.frame()) {
     `=` = give(txt),
     `!` = alert(txt),
     `$` = expose(txt),
-    `.` = display(txt)
+    `.` = display(txt),
+    e = error(txt),
+    w = warn(txt)
   )
 }
 
@@ -215,13 +219,12 @@ fail <- function(.envir = parent.frame()) {
 #' @name user-interaction
 NULL
 
-# NOTE this does not work with cli styling, but that's OK?
 #' @rdname user-interaction
 #' @export
 give <- function(...) {
   cli::cli_div(theme = rui_theme())
   # TODO use {cli} instead
-  usethis::ui_code_block(c(...))
+  usethis::ui_code_block(c(...), copy = TRUE)
 }
 
 #' @rdname user-interaction
@@ -257,7 +260,7 @@ ask <- function(..., .demo = FALSE) {
 
 #' Conditions
 #'
-#' These functions provide a way for signaling conditions. `rui::warn()` and
+#' These functions provide a way for signalling conditions. `rui::warn()` and
 #' `rui::error()` are drop-in replacements for [base::warning()] and
 #' [base::stop()], which support **glue** strings and **cli** inline styles.
 #' ANSI colours are lost however. For retaining colours, `rui::alert()`
@@ -329,10 +332,11 @@ NULL
 #' @export
 expose <- function(..., level = 1) {
   prefix <- paste0(
-    rep(paste0(".", c(cli::col_cyan("$"), cli::col_yellow("$"))),
+    rep(paste0(c(cli::col_cyan("$"), cli::col_yellow("$")), "."),
         ceiling(level / 2))[1:level],
     collapse = ""
   )
+  prefix <- prefix |> substr(1, nchar(prefix) - 1)
   tell(prefix, ..., .envir = parent.frame())
   invisible()
 }

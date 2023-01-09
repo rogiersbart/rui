@@ -1,0 +1,165 @@
+---
+title: "Get started with {rui}"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Get started with {rui}}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## The verb API
+
+The 19 verbs currently implemented in {rui} are tell, entitle, inform, approve,
+dissapprove, begin, proceed, clear, succeed, fail, give, suggest, ask, alert,
+warn, error, display, expose and inspect.
+
+### Plain text messages
+
+For plain text messages, you can use `rui::tell()`:
+
+```{r}
+rui::tell("A message without any particular prefix.")
+```
+
+In most of the verbs, {glue} strings and {cli} styles are supported, so you can
+for instance do things like:
+
+```{r}
+rui::tell("With {.fun nrow} you can see that the {.code cars} data frame has {nrow(cars)} rows.")
+rui::tell("The {.strong first 5 letters} of the alphabet are {.strong {letters[1:5]}}.")
+```
+
+### Multi-line user feedback
+
+For more advanced, multi-line user feedback, make use of `rui::entitle()`,
+`rui::inform()`, `rui::approve()` and `rui::dissapprove()`:
+
+```{r}
+rui::entitle("A markdown-like title")
+rui::inform("Provide some information to the user")
+rui::approve("Approve something")
+rui::disapprove("Disapprove something")
+```
+
+### Single-line user feedback
+
+With long-running tasks, it may be interesting to indicate the user that R is
+busy doing something. The single-line user feedback verbs `rui::begin()` and
+`rui::proceed()` can be used for this purpose, where `rui::clear()`,
+`rui::succeed()` and `rui::fail()` resolve the status message by removing it,
+or indicating success or failure respectively:
+
+```{r}
+rui::begin("Analysing something")
+rui::proceed("Analysing the next thing")
+rui::succeed()
+rui::begin("Something that will fail")
+rui::fail()
+rui::begin("A message that can be cleared from the console")
+rui::clear()
+```
+
+Note that ongoing task messages from `rui::begin()` or `rui::proceed()` are not
+displayed here, only the final messages that would remain visible in the
+console/terminal are retained. Hence, the last message is not shown at all.
+
+### User interaction
+
+To provide the user with a piece of code to use, you can use `rui::give()`:
+
+```{r}
+rui::give("nrow(cars)")
+```
+
+To suggest the user to do something, use `rui::suggest()`:
+
+```{r}
+rui::suggest("Restart R")
+```
+
+To pose a yes/no question to the user, use `rui::ask()`:
+
+```{r}
+rui::ask("Can we install this additional dependency for you?", .demo = TRUE)
+```
+
+Note the `.demo` argument is only set here to demonstrate what the message
+would look like, without actually waiting for a response.
+
+### Conditions
+
+Functions `rui::warn()` and `rui::error()` are drop-in replacements for `base::warning()` and
+`base::stop()`. They don't support ANSI colours however. Instead, `rui::alert()`
+can be used, and arguments `warn` and `error` can be set to `TRUE` if the 
+corresponding conditions should be signalled as well:
+
+```{r}
+rui::warn("Something may be wrong")
+rui::error("Something did go wrong", .demo = TRUE)
+rui::alert("Something important")
+```
+
+Note the `.demo` argument is again used here to demonstrate how the error
+message would be printed, without actually signalling an error.
+
+### Object inspection
+
+Finally, the verbs `rui::display()` and `rui::expose()` can
+be used for designing custom object print functions, where the idea is that
+`rui::display()` displays the bare contents of the object, while `rui::expose()`
+can dig deeper into an hierarchical object:
+
+```{r}
+rui::display("Bare contents")
+rui::expose("Level one contents")
+rui::expose("Level two contents", level = 2)
+rui::expose("Level three contents", level = 3)
+```
+
+Both are used within `rui::inspect()`, which tries to provide object printing
+consistent with the rest of the {rui} functionality:
+
+```{r}
+rui::inspect(cars)
+```
+
+## The rui::console() API
+
+The `rui::console()` API currently just maps prefixes to the corresponding
+verbs, as follows:
+
+|Prefix |Verb                 |Comment                   |
+|-------|---------------------|--------------------------|
+|       | `rui::tell()`       |                          |
+| #     | `rui::entitle()`    |                          |
+| i     | `rui::inform()`     |                          |
+| v     | `rui::approve()`    |                          |
+| x     | `rui::disapprove()` |                          |
+| ~     | `rui::begin()`      | Same as `rui::proceed()` |
+| ~     | `rui::proceed()`    | Same as `rui::begin()`   |
+| c     | `rui::clear()`      | Single character "c"     |
+| v     | `rui::succeed()`    | Single character "v"     |
+| x     | `rui::fail()`       | Single character "x"     |
+| =     | `rui::give()`       |                          |
+| *     | `rui::suggest()`    |                          |
+| ?     | `rui::ask()`        |                          |
+| !     | `rui::alert()`      |                          |
+| w     | `rui::warn()`       |                          |
+| e     | `rui::error()`      |                          |
+| .     | `rui::display()`    |                          |
+| $     | `rui::expose()`     |                          |
+
+This means that `rui::console("# title")` will be equivalent to
+`rui::entitle("title")`, etc. Only for object inspection, we need to use the
+`object` argument instead, to achieve the same as `rui::inspect(cars)`:
+
+```{r}
+rui::console(object = cars)
+```

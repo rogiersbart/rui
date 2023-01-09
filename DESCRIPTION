@@ -1,7 +1,7 @@
 Package: rui
 Type: Package
 Title: A simple set of UI functions
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: person(
     given = "Bart",
     family = "Rogiers",
@@ -18,8 +18,11 @@ Imports:
     cli,
     usethis
 Suggests:
-    reticulate
+    knitr,
+    reticulate,
+    rmarkdown
 RoxygenNote: 7.2.2
 Roxygen: list(markdown = TRUE)
 URL: https://rogiersbart.github.io/rui
 BugReports: https://github.com/rogiersbart/rui/issues
+VignetteBuilder: knitr

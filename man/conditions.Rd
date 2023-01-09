@@ -25,7 +25,7 @@ styles.}
 \item{error}{Logical. Should an error be issued with the same message.}
 }
 \description{
-These functions provide a way for signaling conditions. \code{rui::warn()} and
+These functions provide a way for signalling conditions. \code{rui::warn()} and
 \code{rui::error()} are drop-in replacements for \code{\link[base:warning]{base::warning()}} and
 \code{\link[base:stop]{base::stop()}}, which support \strong{glue} strings and \strong{cli} inline styles.
 ANSI colours are lost however. For retaining colours, \code{rui::alert()}

@@ -1,9 +1,9 @@
 
-# rui (development version)
+# rui 0.2.0
 
-* New `console()` API to interact with the user over the command line, as an
-  alternative to the verb-based API.
-* Introduced a custom {cli} theme that still behaves well in literate computing.
+* Added a "Get started" vignette.
+* New `console()` API as alternative to the verb-based API.
+* Added a custom {cli} theme that still behaves well in literate computing.
 * Added a `NEWS.md` file to track changes to the package.
 * Changed internals to catch up with {cli} developments.
 
