@@ -1,10 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://rogiersbart.github.io/rui/404.html</loc>
+  </url>
+  <url>
+    <loc>https://rogiersbart.github.io/rui/articles/articles/rui.html</loc>
+  </url>
+  <url>
+    <loc>https://rogiersbart.github.io/rui/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://rogiersbart.github.io/rui/articles/rui.html</loc>
+  </url>
+  <url>
+    <loc>https://rogiersbart.github.io/rui/authors.html</loc>
+  </url>
+  <url>
     <loc>https://rogiersbart.github.io/rui/index.html</loc>
   </url>
   <url>
+    <loc>https://rogiersbart.github.io/rui/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://rogiersbart.github.io/rui/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>https://rogiersbart.github.io/rui/news/index.html</loc>
+  </url>
+  <url>
+    <loc>https://rogiersbart.github.io/rui/reference/conditions.html</loc>
+  </url>
+  <url>
+    <loc>https://rogiersbart.github.io/rui/reference/console.html</loc>
+  </url>
+  <url>
+    <loc>https://rogiersbart.github.io/rui/reference/index.html</loc>
+  </url>
+  <url>
     <loc>https://rogiersbart.github.io/rui/reference/multi-line-feedback.html</loc>
+  </url>
+  <url>
+    <loc>https://rogiersbart.github.io/rui/reference/object-inspection.html</loc>
+  </url>
+  <url>
+    <loc>https://rogiersbart.github.io/rui/reference/python.html</loc>
   </url>
   <url>
     <loc>https://rogiersbart.github.io/rui/reference/single-line-feedback.html</loc>
